@@ -4,8 +4,18 @@
 
 using namespace std;
 
+void SetPosition(char Shape, int X, int Y)
+{
+	COORD MonsterPosition = { X, Y };
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), MonsterPosition);
+	std::cout << Shape << endl;
+}
+
 int main()
 {
+	// ·£´ý ½Ãµå
+	srand(time(nullptr));
+
 	int Map[10][10] =
 	{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -25,6 +35,15 @@ int main()
 
 	int PlayerInput = 0;
 	bool bIsPlay = true;
+
+	char MonsterShape = 'M';
+	int MonsterX = 0;
+	int MonsterY = 0;
+	int MonsterMovement = 0;
+
+	MonsterX = rand() % 10;
+	MonsterY = rand() * rand() % 10;
+
 	while (bIsPlay)
 	{
 		PlayerInput = _getch();
@@ -50,10 +69,28 @@ int main()
 			bIsPlay = false;
 		}
 
+		MonsterMovement = rand() % 4;
+
+		if (MonsterMovement == 0)
+		{
+			--MonsterY;
+		}
+		else if (MonsterMovement == 1)
+		{
+			++MonsterY;
+		}
+		else if (MonsterMovement == 2)
+		{
+			--MonsterX;
+		}
+		else if (MonsterMovement == 3)
+		{
+			++MonsterX;
+		}
+
 		system("cls");
-		COORD pos = { PlayerX,PlayerY };
-		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-		cout << PlayerShape << endl;
+		SetPosition('P', PlayerX, PlayerY);
+		SetPosition('M', MonsterX, MonsterY);
 	}
 
 	return 0;
