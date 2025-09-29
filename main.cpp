@@ -4,13 +4,8 @@
 
 using namespace std;
 
-enum ERenderScreenBuffer
-{
-	FrontBuffer = 0,
-	BackBuffer = 1
-};
-
-int CurrentBufferIndex = FrontBuffer;
+int CurrentBufferIndex = 0;
+HANDLE ScreenBuffers[2];
 
 struct FCharacter
 {
@@ -23,14 +18,12 @@ FCharacter Characters[2];
 
 int KeyCode;
 bool bIsPlay;
-HANDLE FrontBufferHandle;
-HANDLE BackBufferHandle;
 
 void Init()
 {
 	// 0, nullptr, NULL 전부 0
-	FrontBufferHandle = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, nullptr, CONSOLE_TEXTMODE_BUFFER, NULL);
-	BackBufferHandle = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, nullptr, CONSOLE_TEXTMODE_BUFFER, NULL);
+	ScreenBuffers[0] = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, nullptr, CONSOLE_TEXTMODE_BUFFER, NULL);
+	ScreenBuffers[1] = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, nullptr, CONSOLE_TEXTMODE_BUFFER, NULL);
 
 	//형변환, Casting
 	srand((unsigned int)time(nullptr));
@@ -118,14 +111,7 @@ void Tick()
 
 void Present()
 {
-	if (CurrentBufferIndex == FrontBuffer)
-	{
-		SetConsoleActiveScreenBuffer(FrontBufferHandle);
-	}
-	else
-	{
-		SetConsoleActiveScreenBuffer(BackBufferHandle);
-	}
+	SetConsoleActiveScreenBuffer(ScreenBuffers[CurrentBufferIndex]);
 
 	++CurrentBufferIndex;
 	CurrentBufferIndex = CurrentBufferIndex % 2;
@@ -139,16 +125,8 @@ void RenderCharacter(const FCharacter* InData)
 	Position.Y = (SHORT)InData->Y;
 	//Position.Y = (SHORT)(*(InData).Y);
 	
-	if (CurrentBufferIndex == FrontBuffer)
-	{
-		SetConsoleCursorPosition(FrontBufferHandle, Position);
-		WriteConsole(FrontBufferHandle, InData->Shape.c_str(), 1, NULL, NULL);
-	}
-	else
-	{
-		SetConsoleCursorPosition(BackBufferHandle, Position);
-		WriteConsole(BackBufferHandle, InData->Shape.c_str(), 1, NULL, NULL);
-	}
+	SetConsoleCursorPosition(ScreenBuffers[CurrentBufferIndex], Position);
+	WriteConsole(ScreenBuffers[CurrentBufferIndex], InData->Shape.c_str(), 1, NULL, NULL);
 
 }
 
@@ -159,27 +137,14 @@ void Clear()
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	DWORD dwConSize;
 
-	if (CurrentBufferIndex == FrontBuffer)
-	{
-		//스크린 버퍼 정보 가져오기
-		GetConsoleScreenBufferInfo(FrontBufferHandle, &csbi);
-		dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
-		FillConsoleOutputCharacter(FrontBufferHandle,
-			(TCHAR)' ',
-			dwConSize,
-			coordScreen,
-			&cCharsWritten);
-	}
-	else
-	{
-		GetConsoleScreenBufferInfo(BackBufferHandle, &csbi);
-		dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
-		FillConsoleOutputCharacter(BackBufferHandle,
-			(TCHAR)' ',
-			dwConSize,
-			coordScreen,
-			&cCharsWritten);
-	}
+	//스크린 버퍼 정보 가져오기
+	GetConsoleScreenBufferInfo(ScreenBuffers[CurrentBufferIndex], &csbi);
+	dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
+	FillConsoleOutputCharacter(ScreenBuffers[CurrentBufferIndex],
+		(TCHAR)' ',
+		dwConSize,
+		coordScreen,
+		&cCharsWritten);
 }
 
 void Render()
