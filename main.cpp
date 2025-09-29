@@ -1,131 +1,137 @@
 #include <iostream>
-#include <conio.h>
 #include <Windows.h>
+#include <conio.h>
 
 using namespace std;
 
-bool Input(int *PlayerX, int *PlayerY)
+struct FCharacter
 {
-	int PlayerInput = _getch();
+	int X;
+	int Y;
+	char Shape;
+};
 
-	if (PlayerInput == 'w')
-	{
-		if (*PlayerY > 0)
-		{
-			--*PlayerY;
-		}
-	}
-	else if (PlayerInput == 's')
-	{
-		++*PlayerY;
-	}
-	else if (PlayerInput == 'a')
-	{
-		if (*PlayerX > 0)
-		{
-			--*PlayerX;
-		}
-	}
-	else if (PlayerInput == 'd')
-	{
-		++*PlayerX;
-	}
-	else if (PlayerInput == 'q')
-	{
-		return false;
-	}
+FCharacter Characters[2];
 
-	return true;
+int KeyCode;
+bool bIsPlay;
+
+void Init()
+{
+	//형변환, Casting
+	srand((unsigned int)time(nullptr));
+	Characters[0].X = 1;
+	Characters[0].Y = 1;
+	Characters[0].Shape = 'P';
+
+	Characters[1].X = 10;
+	Characters[1].Y = 10;
+	Characters[1].Shape = 'M';
+
+	bIsPlay = true;
 }
 
-void ProcessMonsterMovement(int *MonsterX, int *MonsterY)
+void Input()
 {
-	int MonsterMovement = rand() % 4;
+	KeyCode = _getch();
+}
 
-	if (MonsterMovement == 0)
+void MovePlayer()
+{
+	//디자인 패턴
+	if (KeyCode == 'w')
 	{
-		if (*MonsterY > 0)
+		if (Characters[0].Y > 0)
 		{
-			--*MonsterY;
+			--Characters[0].Y;
 		}
 	}
-	else if (MonsterMovement == 1)
+	else if (KeyCode == 's')
 	{
-		++*MonsterY;
+		++Characters[0].Y;
 	}
-	else if (MonsterMovement == 2)
+	else if (KeyCode == 'a')
 	{
-		if (*MonsterX > 0)
+		if (Characters[0].X > 0)
 		{
-			--*MonsterX;
+			--Characters[0].X;
 		}
 	}
-	else if (MonsterMovement == 3)
+	else if (KeyCode == 'd')
 	{
-		++*MonsterX;
+		++Characters[0].X;
+	}
+	else if (KeyCode == 'q')
+	{
+		bIsPlay = false;
 	}
 }
 
-void SetPosition(char Shape, int X, int Y)
+void MoveMonster()
 {
-	COORD MonsterPosition = { X, Y };
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), MonsterPosition);
-	std::cout << Shape << endl;
+	int Direction = rand() % 4;
+
+	switch (Direction)
+	{
+	case 0:		//Up
+		if (Characters[1].Y > 0)
+		{
+			--Characters[1].Y;
+		}
+		break;
+	case 1:		//Down
+		++Characters[1].Y;
+		break;
+	case 2:		//Left
+		if (Characters[1].X > 0)
+		{
+			--Characters[1].X;
+		}
+		break;
+	case 3:		//Right
+		++Characters[1].X;
+		break;
+	default:	//Error
+		break;
+	}
+}
+
+void Tick()
+{
+	MovePlayer();
+	MoveMonster();
+}
+
+void RenderCharacter(FCharacter InData)
+{
+	COORD Position;
+	Position.X = (SHORT)InData.X;
+	Position.Y = (SHORT)InData.Y;
+
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Position);
+	cout << InData.Shape;
+}
+
+void Render()
+{
+	system("cls");
+	for (int i = 0; i < 2; i++)
+	{
+		RenderCharacter(Characters[i]);
+	}
 }
 
 int main()
 {
-	//// 랜덤 시드
-	//srand(time(nullptr));
+	Init();
 
-	//int Map[10][10] =
-	//{
-	//	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	//	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-	//};
-	//char PlayerShape = 'P';
-	//int PlayerX = 0;
-	//int PlayerY = 0;
-
-	//bool bIsPlay = true;
-
-	//char MonsterShape = 'M';
-	//int MonsterX = 0;
-	//int MonsterY = 0;
-
-	//MonsterX = rand() % 10;
-	//MonsterY = rand() * rand() % 10;
-
-	//while (bIsPlay)
-	//{
-	//	bIsPlay = Input(&PlayerX, &PlayerY);
-
-	//	ProcessMonsterMovement(&MonsterX, &MonsterY);
-
-	//	system("cls");
-
-	//	SetPosition('P', PlayerX, PlayerY);
-	//	SetPosition('M', MonsterX, MonsterY);
-	//}
-
-	//형변환
-	int CurrentHP = 30;
-	int MaxHP = 100;
-	float Percent = 0.0f;
-
-	// C, C++만 가능하지만 절대 생략해선 안됌
-	Percent = CurrentHP / MaxHP;
-
-	Percent = (float)CurrentHP / (float)MaxHP;
-	cout << Percent << endl;
+	while (bIsPlay)
+	{	
+		//Frame
+		Input();
+		Tick();
+		Render();
+	}
 
 	return 0;
 }
