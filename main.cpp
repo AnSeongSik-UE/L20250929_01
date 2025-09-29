@@ -75,46 +75,57 @@ void SetPosition(char Shape, int X, int Y)
 
 int main()
 {
-	// 랜덤 시드
-	srand(time(nullptr));
+	//// 랜덤 시드
+	//srand(time(nullptr));
 
-	int Map[10][10] =
-	{
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-	};
-	char PlayerShape = 'P';
-	int PlayerX = 0;
-	int PlayerY = 0;
+	//int Map[10][10] =
+	//{
+	//	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	//	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	//	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	//};
+	//char PlayerShape = 'P';
+	//int PlayerX = 0;
+	//int PlayerY = 0;
 
-	bool bIsPlay = true;
+	//bool bIsPlay = true;
 
-	char MonsterShape = 'M';
-	int MonsterX = 0;
-	int MonsterY = 0;
+	//char MonsterShape = 'M';
+	//int MonsterX = 0;
+	//int MonsterY = 0;
 
-	MonsterX = rand() % 10;
-	MonsterY = rand() * rand() % 10;
+	//MonsterX = rand() % 10;
+	//MonsterY = rand() * rand() % 10;
 
-	while (bIsPlay)
-	{
-		bIsPlay = Input(&PlayerX, &PlayerY);
+	//while (bIsPlay)
+	//{
+	//	bIsPlay = Input(&PlayerX, &PlayerY);
 
-		ProcessMonsterMovement(&MonsterX, &MonsterY);
+	//	ProcessMonsterMovement(&MonsterX, &MonsterY);
 
-		system("cls");
+	//	system("cls");
 
-		SetPosition('P', PlayerX, PlayerY);
-		SetPosition('M', MonsterX, MonsterY);
-	}
+	//	SetPosition('P', PlayerX, PlayerY);
+	//	SetPosition('M', MonsterX, MonsterY);
+	//}
+
+	//형변환
+	int CurrentHP = 30;
+	int MaxHP = 100;
+	float Percent = 0.0f;
+
+	// C, C++만 가능하지만 절대 생략해선 안됌
+	Percent = CurrentHP / MaxHP;
+
+	Percent = (float)CurrentHP / (float)MaxHP;
+	cout << Percent << endl;
 
 	return 0;
 }
