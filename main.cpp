@@ -4,6 +4,68 @@
 
 using namespace std;
 
+bool Input(int *PlayerX, int *PlayerY)
+{
+	int PlayerInput = _getch();
+
+	if (PlayerInput == 'w')
+	{
+		if (*PlayerY > 0)
+		{
+			--*PlayerY;
+		}
+	}
+	else if (PlayerInput == 's')
+	{
+		++*PlayerY;
+	}
+	else if (PlayerInput == 'a')
+	{
+		if (*PlayerX > 0)
+		{
+			--*PlayerX;
+		}
+	}
+	else if (PlayerInput == 'd')
+	{
+		++*PlayerX;
+	}
+	else if (PlayerInput == 'q')
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void ProcessMonsterMovement(int *MonsterX, int *MonsterY)
+{
+	int MonsterMovement = rand() % 4;
+
+	if (MonsterMovement == 0)
+	{
+		if (*MonsterY > 0)
+		{
+			--*MonsterY;
+		}
+	}
+	else if (MonsterMovement == 1)
+	{
+		++*MonsterY;
+	}
+	else if (MonsterMovement == 2)
+	{
+		if (*MonsterX > 0)
+		{
+			--*MonsterX;
+		}
+	}
+	else if (MonsterMovement == 3)
+	{
+		++*MonsterX;
+	}
+}
+
 void SetPosition(char Shape, int X, int Y)
 {
 	COORD MonsterPosition = { X, Y };
@@ -33,62 +95,23 @@ int main()
 	int PlayerX = 0;
 	int PlayerY = 0;
 
-	int PlayerInput = 0;
 	bool bIsPlay = true;
 
 	char MonsterShape = 'M';
 	int MonsterX = 0;
 	int MonsterY = 0;
-	int MonsterMovement = 0;
 
 	MonsterX = rand() % 10;
 	MonsterY = rand() * rand() % 10;
 
 	while (bIsPlay)
 	{
-		PlayerInput = _getch();
+		bIsPlay = Input(&PlayerX, &PlayerY);
 
-		if (PlayerInput == 'w')
-		{
-			--PlayerY;
-		}
-		else if (PlayerInput == 's')
-		{
-			++PlayerY;
-		}
-		else if (PlayerInput == 'a')
-		{
-			--PlayerX;
-		}
-		else if (PlayerInput == 'd')
-		{
-			++PlayerX;
-		}
-		else if (PlayerInput == 'q')
-		{
-			bIsPlay = false;
-		}
-
-		MonsterMovement = rand() % 4;
-
-		if (MonsterMovement == 0)
-		{
-			--MonsterY;
-		}
-		else if (MonsterMovement == 1)
-		{
-			++MonsterY;
-		}
-		else if (MonsterMovement == 2)
-		{
-			--MonsterX;
-		}
-		else if (MonsterMovement == 3)
-		{
-			++MonsterX;
-		}
+		ProcessMonsterMovement(&MonsterX, &MonsterY);
 
 		system("cls");
+
 		SetPosition('P', PlayerX, PlayerY);
 		SetPosition('M', MonsterX, MonsterY);
 	}
